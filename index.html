@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title data-i18n="app_title">MockerMix Beta</title>
+    <title data-i18n="app_title">音频混音器</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="translations.js"></script>
@@ -29,9 +29,56 @@
         }
     </script>
     <style>
+        :root {
+            --bg-color: #111111;
+            --text-color: #E5E5E7;
+            --panel-bg: #2C2C2E;
+            --panel-hover: #3A3A3C;
+            --panel-border: #3A3A3C;
+            --input-bg: #2C2C2E;
+            --input-border: #3A3A3C;
+            --scrollbar-track: #1C1C1E;
+            --scrollbar-thumb: #5E5CE6;
+            --scrollbar-thumb-hover: #4c4adb;
+            --accent-color: #5E5CE6;
+            --accent-hover: #4c4adb;
+            --slider-text-color: #3A3A3C;
+            --title-color: #FFFFFF;
+            --icon-color: #E5E5E7;
+            --slider-hint-color: #626266; /* 滑块提示文字颜色（黑暗模式） */
+            --description-color: #626266; /* 描述文字颜色（黑暗模式） */
+            --button-bg: #3A3A3C; /* 按钮背景色（深色模式） */
+            --combo-border: #3A3A3C; /* 下拉框边框色（深色模式） */
+            --spinner-color: #4a4a4c; /* 输入框调节按钮颜色（深色模式） */
+        }
+
+        /* 亮色主题样式 */
+        body.light-theme {
+            --bg-color: #F2F2F7;
+            --text-color: #1C1C1E;
+            --panel-bg: #FFFFFF;
+            --panel-hover: #F2F2F7;
+            --panel-border: #E5E5EA;
+            --input-bg: #FFFFFF;
+            --input-border: #D1D1D6;
+            --scrollbar-track: #F2F2F7;
+            --scrollbar-thumb: #5E5CE6;
+            --scrollbar-thumb-hover: #4c4adb;
+            --accent-color: #5E5CE6;
+            --accent-hover: #4c4adb;
+            --slider-text-color: #1C1C1E;
+            --title-color: #1C1C1E;
+            --icon-color: #1C1C1E;
+            --slider-hint-color: #8E8E93; /* 滑块提示文字颜色（亮色模式） */
+            --description-color: #8E8E93; /* 描述文字颜色（亮色模式） */
+            --button-bg: rgba(37, 37, 37, 0.63); /* 按钮背景色（亮色模式）- 更淡的灰色 */
+            --combo-border: #D1D1D6; /* 下拉框边框色（亮色模式） */
+            --spinner-color: #D1D1D6; /* 输入框调节按钮颜色（亮色模式） */
+        }
+
         body {
-            background-color: #111111;
-            color: #E5E5E7;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
         }
 
@@ -54,8 +101,7 @@
         }
 
         #playlist-container {
-            height: calc(100vh - 380px);
-            min-height: 200px;
+            height: 660px; /* 固定高度为400px */
             margin-top: 1rem;
         }
 
@@ -71,7 +117,7 @@
             margin: 8px 0;
             cursor: pointer;
             border-radius: 8px;
-            background-color: #2C2C2E;
+            background-color: var(--panel-bg);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -79,7 +125,7 @@
         }
 
         #playlist li:hover {
-            background-color: #3A3A3C;
+            background-color: var(--panel-hover);
         }
 
         #playlist li.playing {
@@ -97,7 +143,7 @@
             width: 100%;
             height: 6px;
             border-radius: 3px;
-            background: #3A3A3C;
+            background: var(--panel-hover);
             outline: none;
         }
 
@@ -112,23 +158,23 @@
         }
 
         input[type="number"] {
-            background-color: #2C2C2E;
-            border: 1px solid #3A3A3C;
-            color: #E5E5E7;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-color);
             padding: 0 0 0 8px; /* 只保留左侧内部间距，让按钮紧贴右侧 */
-            /* 自定义输入框调节按钮的暗色配色 */
+            /* 自定义输入框调节按钮的配色 */
             &::-webkit-inner-spin-button,
             &::-webkit-outer-spin-button {
-                background-color: #3A3A3C;
+                background-color: var(--spinner-color);
                 opacity: 0; /* 默认隐藏调节按钮 */
                 filter: invert(0.7);
                 margin-left: 0; /* 让按钮紧贴输入框右侧 */
             }
 
-            /* 鼠标悬停时显示调节按钮 */
+            /* 鼠标悬停     显示调节按钮 */
             &:hover::-webkit-inner-spin-button,
             &:hover::-webkit-outer-spin-button {
-                opacity: 1; /* 鼠标悬停时显示调节按钮 */
+                opacity: 0.5; /* 鼠标悬停时显示调节按钮 */
             }
         }
 
@@ -143,17 +189,38 @@
         /* 自定义下拉框样式 */
         select {
             appearance: none;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--combo-border);
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%235E5CE6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
             background-repeat: no-repeat;
             background-position: right 12px center; /* 增加右侧箭头和边缘的距离 */
             padding-right: 40px; /* 确保文字与箭头之间有足够空间 */
         }
 
-        /* 自定义下拉菜单选项样式 */
+        /* 自定义下拉菜单   项样式 */
         select option {
-            background-color: #2C2C2E;
-            color: #E5E5E7;
+            background-color: var(--input-bg);
+            color: var(--text-color);
             padding: 12px; /* 增加选项之间的间距 */
+        }
+
+        /* 列表项文本样式，添加过长省略显示 */
+        .playlist-item-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 400px; /* 从200px增加到400px，增加为原来的2倍 */
+        }
+
+        /* 权重输入框、混音数量输入框样式 */
+        .weight-input, #mix-count {
+            position: relative;
+        }
+
+        /* 下拉框选项悬停样式 */
+        select option:hover {
+            background-color: var(--panel-hover);
         }
 
         .btn {
@@ -204,14 +271,13 @@
         .main-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-            height: calc(100vh - 250px);
-            min-height: 500px;
+            gap: 1.1rem;
+            min-height: 300px;
             margin-bottom: 2rem;
         }
 
         .left-panel, .right-panel {
-            display: flex;
+
             flex-direction: column;
         }
 
@@ -227,56 +293,67 @@
             flex-direction: column;
         }
 
-        /* 确保左右两侧上下面板间距相同 */
-        .left-panel .panel-top {
-            margin-bottom: 1rem;
+        /* 为面板应用主题颜色变量 */
+        .bg-dark-200, .panel-bottom {
+            background-color: var(--panel-bg);
+            color: var(--text-color);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .left-panel .panel-bottom {
-            margin-top: 0;
-        }
-
-        #empty-list {
-            display: none;
-        }
-
-        .delete-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            color: rgba(94, 92, 230, 0.9);
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .delete-btn:hover {
-            color: rgba(94, 92, 230, 1);
-        }
-
-        /* 自定义滚动条样式 - 暗色系 */
+        /* 自定义滚动条样式 - 应用主题变量 */
         #playlist::-webkit-scrollbar {
             width: 8px;
         }
 
         #playlist::-webkit-scrollbar-track {
-            background: #1C1C1E;
+            background: var(--scrollbar-track);
             border-radius: 4px;
         }
 
         #playlist::-webkit-scrollbar-thumb {
-            background: #3A3A3C;
+            background: var(--scrollbar-thumb);
             border-radius: 4px;
         }
 
         #playlist::-webkit-scrollbar-thumb:hover {
-            background: #48484A;
+            background: var(--scrollbar-thumb-hover);
         }
 
         /* 增加滚动条与列表内容的间距 */
         #playlist {
             padding-right: 12px;
+        }
+
+        /* 修正slider的文字颜色 */
+        .slider-text {
+            color: var(--slider-text-color);
+        }
+
+        /* 页面标题颜色 */
+        .page-title {
+            color: var(--title-color);
+        }
+
+        /* 图标颜色 */
+        .theme-icon {
+            color: var(--icon-color);
+        }
+
+        /* 滑块下方提示文本颜色 */
+        .slider-hint {
+            color: var(--slider-hint-color);
+        }
+
+        /* 描述性文本颜色 */
+        .description-text {
+            color: var(--description-color);
+        }
+
+        /* 面板标题样式 */
+        .panel-title {
+            color: var(--text-color);
+            font-size: 1rem; /* 更小的字体大小 */
+            font-weight: 600; /* 粗体但不过度 */
         }
     </style>
 </head>
@@ -285,21 +362,34 @@
 <header class="mb-6">
     <div class="flex justify-between items-center mb-3">
         <div></div>
-        <div class="language-selector flex items-center">
-            <!-- 使用语言图标替代文字标签 -->
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
-            </svg>
-            <!-- 设置固定宽度 -->
-            <select id="language-select" class="bg-dark-300 text-white py-1 px-2 rounded border border-dark-400 focus:outline-none focus:border-accent-primary w-24">
-                <option value="zh">中文</option>
-                <option value="en">English</option>
-                <option value="ja">日本語</option>
-            </select>
+        <div class="flex items-center">
+            <!-- 主题切换按钮 -->
+            <button id="theme-toggle" class="mr-4 p-2 rounded-full transition-colors" style="background-color: var(--button-bg);">
+                <!-- 太阳图标 (亮色模式) -->
+                <svg id="light-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-300 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <!-- 月亮图标 (深色模式) -->
+                <svg id="dark-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 theme-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+            <div class="language-selector flex items-center">
+                <!-- 使用语言图标替代文字标签 -->
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 theme-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+                <!-- 设置固定宽度 -->
+                <select id="language-select" class="py-1 px-2 rounded border focus:outline-none focus:border-accent-primary w-24">
+                    <option value="zh">中文</option>
+                    <option value="en">English</option>
+                    <option value="ja">日本語</option>
+                </select>
+            </div>
         </div>
     </div>
-    <h1 class="text-3xl font-bold text-center text-white">MockerMix</h1>
-    <p class="text-center text-gray-400 mt-2" data-i18n="app_description">拖放音频文件并创建混音效果</p>
+    <h1 class="text-3xl font-bold text-center page-title">MockerMix</h1>
+    <p class="text-center mt-2 description-text" data-i18n="app_description">拖放音频文件并创建混音效   </p>
 </header>
 
 <main class="main-container">
@@ -316,11 +406,10 @@
         </div>
 
         <!-- 左下：播放列表 -->
-        <div class="panel-bottom bg-dark-200 rounded-lg p-6">
-            <h2 class="text-xl font-medium mb-4 text-white" data-i18n="playlist_title">播放列表</h2>
+        <div class="panel-bottom rounded-lg p-6" style="background-color: var(--panel-bg);">
+            <h2 class="panel-title mb-4" data-i18n="playlist_title">播放列表</h2>
             <div id="playlist-container">
                 <ul id="playlist" class="overflow-y-auto"></ul>
-                <p id="empty-list" class="text-gray-500 text-center py-4" data-i18n="empty_list">暂无音频文件</p>
             </div>
         </div>
     </div>
@@ -328,8 +417,8 @@
     <!-- 右侧面板 -->
     <div class="right-panel">
         <!-- 右上：控制面板 -->
-        <div class="panel-top bg-dark-200 rounded-lg p-6">
-            <h2 class="text-xl font-medium mb-4 text-white" data-i18n="control_panel">控制面板</h2>
+        <div class="panel-top rounded-lg p-6" style="background-color: var(--panel-bg);">
+            <h2 class="panel-title mb-4" data-i18n="control_panel">控制面板</h2>
 
             <div class="flex flex-wrap items-center gap-6 mb-6">
                 <button id="start" class="btn btn-primary flex items-center">
@@ -343,44 +432,59 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z" clip-rule="evenodd" />
                     </svg>
-                    <span data-i18n="stop_play">���止播放</span>
+                    <span data-i18n="stop_play">停止播放</span>
                 </button>
 
                 <div class="flex items-center">
-                    <label for="mix-count" class="text-gray-300 mr-3" data-i18n="mix_count">混音数量:</label>
-                    <input type="number" id="mix-count" min="0" max="6" value="0" class="w-16 px-3 py-2 rounded">
-                    <span class="ml-3 text-sm text-gray-500" data-i18n="mix_count_desc">(0=不混音，最大6个)</span>
+                    <label for="mix-count" style="color: var(--text-color);" class="mr-3" data-i18n="mix_count">混音数量:</label>
+                    <input type="number" id="mix-count" min="0" max="6" value="0" class="w-16 px-3 py-2 rounded" title="" data-i18n-title="mix_count_tooltip">
+                    <span class="ml-3 text-sm description-text" data-i18n="mix_count_desc">(0=不混音，最大6个)</span>
                 </div>
             </div>
 
             <div class="slider-container mt-6">
                 <div class="flex justify-between mb-2">
-                    <label for="master-volume" class="text-gray-300" data-i18n="master_volume">总音量</label>
+                    <label for="master-volume" style="color: var(--text-color);" data-i18n="master_volume">总音量</label>
                     <span id="master-volume-display" class="text-accent-primary">100%</span>
                 </div>
                 <input type="range" id="master-volume" min="0" max="100" value="100" class="w-full">
-                <div class="flex justify-between text-xs text-gray-500">
+                <div class="flex justify-between text-xs slider-hint">
                     <span>0%</span>
                     <span>100%</span>
                 </div>
             </div>
 
-            <div class="audio-controls">
+            <!-- 混响控件滑块 -->
+            <div class="slider-container mt-6">
+                <div class="flex justify-between mb-2">
+                    <label for="reverb-amount" style="color: var(--text-color);" data-i18n="reverb_level">混响强度</label>
+                    <span id="reverb-amount-display" class="text-accent-primary">0%</span>
+                </div>
+                <input type="range" id="reverb-amount" min="0" max="100" value="0" class="w-full">
+                <div class="flex justify-between text-xs slider-hint">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+
+            <div class="audio-controls" style="background-color: var(--panel-bg);">
                 <audio id="audio-player" controls></audio>
             </div>
         </div>
 
+
+
         <!-- 右下：播放设置 -->
-        <div class="panel-bottom bg-dark-200 rounded-lg p-6">
-            <h2 class="text-xl font-medium mb-4 text-white" data-i18n="play_settings">播放设置</h2>
+        <div class="panel-bottom rounded-lg p-6" style="background-color: var(--panel-bg);">
+            <h2 class="panel-title mb-4" data-i18n="play_settings">播放设置</h2>
 
             <div class="slider-container">
                 <div class="flex justify-between mb-2">
-                    <label for="base-interval" class="text-gray-300" data-i18n="base_interval">基本间隔时间</label>
+                    <label for="base-interval" style="color: var(--text-color);" data-i18n="base_interval">基本间隔时间</label>
                     <span id="base-interval-display" class="text-accent-primary">1.0<span data-i18n="seconds">秒</span></span>
                 </div>
                 <input type="range" id="base-interval" min="100" max="4000" value="1000" class="w-full">
-                <div class="flex justify-between text-xs text-gray-500">
+                <div class="flex justify-between text-xs slider-hint">
                     <span>0.1s</span>
                     <span>4s</span>
                 </div>
@@ -388,11 +492,11 @@
 
             <div class="slider-container">
                 <div class="flex justify-between mb-2">
-                    <label for="offset" class="text-gray-300" data-i18n="offset_percentage">随机偏移百分比</label>
+                    <label for="offset" style="color: var(--text-color);" data-i18n="offset_percentage">随机  移百分比</label>
                     <span id="offset-display" class="text-accent-primary">20%</span>
                 </div>
                 <input type="range" id="offset" min="0" max="100" value="20" class="w-full">
-                <div class="flex justify-between text-xs text-gray-500">
+                <div class="flex justify-between text-xs slider-hint">
                     <span>0%</span>
                     <span>100%</span>
                 </div>
@@ -400,21 +504,26 @@
 
             <div class="mt-6 flex items-center">
                 <input type="checkbox" id="prevent-repeat" class="mr-3">
-                <label for="prevent-repeat" class="text-gray-300" data-i18n="prevent_repeat">防止重复播放同一音频</label>
+                <label for="prevent-repeat" style="color: var(--text-color);" data-i18n="prevent_repeat">防止重复播放同一音频</label>
             </div>
 
             <div class="mt-6">
-                <label for="trigger-mode" class="text-gray-300 block mb-2" data-i18n="trigger_mode">触发方式</label>
-                <select id="trigger-mode" class="bg-dark-300 text-white py-2 px-3 rounded w-full border border-dark-400 focus:outline-none focus:border-accent-primary">
-                    <option value="timer" selected data-i18n="trigger_mode_timer">当触发器触发时</option>
-                    <option value="ended" data-i18n="trigger_mode_ended">当音频播放完成时</option>
+                <label for="trigger-mode" style="color: var(--text-color);" class="block mb-2" data-i18n="trigger_mode">触发方式</label>
+                <select id="trigger-mode" class="py-2 px-3 rounded w-full focus:outline-none focus:border-accent-primary">
+                    <option value="timer" selected data-i18n="trigger_mode_timer" data-i18n-title="trigger_mode_timer_tooltip">当触发器触发时</option>
+                    <option value="ended" data-i18n="trigger_mode_ended" data-i18n-title="trigger_mode_ended_tooltip">当音频播放完成时</option>
                 </select>
             </div>
         </div>
+
+
+
+
+
     </div>
 </main>
 
-<!-- 大幅增加底部留白空间 -->
+<!-- 通过增加底部留白空间 -->
 <div class="py-24"></div>
 
 <!-- 引用外部JavaScript文件 -->
